@@ -3,38 +3,19 @@
 set -euo pipefail
 
 MARKETPLACE_DIR="$HOME/.claude/plugins/marketplaces/local"
-PLUGIN_DIR="$MARKETPLACE_DIR/plugins/worktree-workspace"
 KNOWN_MARKETPLACES="$HOME/.claude/plugins/known_marketplaces.json"
 REPO_URL="https://github.com/adamcjm/claude-code-worktree-workspace.git"
 
 echo "Installing worktree-workspace plugin..."
 
-# Clone / update the plugin
-if [ -d "$PLUGIN_DIR/.git" ]; then
+# Clone / update the marketplace
+if [ -d "$MARKETPLACE_DIR/.git" ]; then
   echo "  Updating..."
-  git -C "$PLUGIN_DIR" pull --ff-only
+  git -C "$MARKETPLACE_DIR" pull --ff-only
 else
   echo "  Cloning..."
-  mkdir -p "$(dirname "$PLUGIN_DIR")"
-  git clone "$REPO_URL" "$PLUGIN_DIR"
+  git clone "$REPO_URL" "$MARKETPLACE_DIR"
 fi
-
-# Create marketplace wrapper
-mkdir -p "$MARKETPLACE_DIR/.claude-plugin"
-cat > "$MARKETPLACE_DIR/.claude-plugin/marketplace.json" << 'MARKETPLACE'
-{
-  "name": "local",
-  "plugins": [
-    {
-      "name": "worktree-workspace",
-      "description": "Create complete git worktree workspaces with nested repos and gitignored config files. No npm install needed.",
-      "source": "./plugins/worktree-workspace",
-      "category": "productivity",
-      "homepage": "https://github.com/adamcjm/claude-code-worktree-workspace"
-    }
-  ]
-}
-MARKETPLACE
 
 # Register marketplace
 python3 -c "
@@ -43,8 +24,6 @@ import json, datetime
 with open('$KNOWN_MARKETPLACES', 'r') as f:
     data = json.load(f)
 
-if 'local' in data:
-    print('  Marketplace already registered, overwriting...')
 data['local'] = {
     'source': {'source': 'github', 'repo': 'adamcjm/claude-code-worktree-workspace'},
     'installLocation': '$MARKETPLACE_DIR',
@@ -55,8 +34,9 @@ with open('$KNOWN_MARKETPLACES', 'w') as f:
 print('  Marketplace registered')
 "
 
-# Install directly (don't run marketplace update — it would overwrite local with remote)
+# Install the plugin
 echo "  Installing plugin..."
+claude plugin marketplace update local 2>/dev/null || true
 claude plugin install worktree-workspace@local 2>&1 || echo "  If the above failed, restart Claude Code and run: /plugin install worktree-workspace@local"
 
 echo ""
