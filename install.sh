@@ -46,18 +46,14 @@ with open('$KNOWN_MARKETPLACES', 'r') as f:
 if 'local' in data:
     print('  Marketplace already registered, overwriting...')
 data['local'] = {
-    'source': {'source': 'github', 'repo': 'adamcjm/claude-code-worktree-workspace'},
     'installLocation': '$MARKETPLACE_DIR',
     'lastUpdated': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.000Z')
 }
 with open('$KNOWN_MARKETPLACES', 'w') as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
-print('  Marketplace registered')
+print('  Marketplace registered (local only)')
 "
 
-# Update marketplace and install the plugin
-echo "  Updating marketplace..."
-claude plugin marketplace update local 2>/dev/null || true
 echo "  Installing plugin..."
 claude plugin install worktree-workspace@local 2>&1 || echo "  If the above failed, restart Claude Code and run: /plugin install worktree-workspace@local"
 
