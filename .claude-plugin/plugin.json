@@ -1,0 +1,12 @@
+{
+  "name": "worktree-workspace",
+  "version": "0.1.0",
+  "description": "Create complete git worktree workspaces with nested repos and gitignored config files. No npm install needed — workspace is immediately runnable.",
+  "author": {
+    "name": "adamcjm",
+    "url": "https://github.com/adamcjm"
+  },
+  "license": "MIT",
+  "keywords": ["git", "worktree", "workspace", "parallel-development", "monorepo"],
+  "homepage": "https://github.com/adamcjm/claude-code-worktree-workspace"
+}
