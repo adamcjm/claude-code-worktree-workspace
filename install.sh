@@ -21,6 +21,7 @@ fi
 python3 -c "
 import json, datetime
 
+# known_marketplaces.json
 with open('$KNOWN_MARKETPLACES', 'r') as f:
     data = json.load(f)
 
@@ -31,7 +32,18 @@ data['local'] = {
 }
 with open('$KNOWN_MARKETPLACES', 'w') as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
-print('  Marketplace registered')
+
+# settings.json (required for in-app /plugin command)
+settings_path = '$HOME/.claude/settings.json'
+with open(settings_path, 'r') as f:
+    settings = json.load(f)
+settings.setdefault('extraKnownMarketplaces', {})['local'] = {
+    'source': {'source': 'github', 'repo': 'adamcjm/claude-code-worktree-workspace'}
+}
+with open(settings_path, 'w') as f:
+    json.dump(settings, f, indent=2, ensure_ascii=False)
+
+print('  Marketplace registered (known_marketplaces + settings)')
 "
 
 # Install the plugin
