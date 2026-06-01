@@ -8,7 +8,7 @@ description: List all workspaces created by worktree-add for the current repo, s
 List all workspaces:
 
 ```bash
-bash "${CLAUDE_PLUGIN_ROOT}/scripts/worktree-list.sh"
+bash ~/.claude/skills/worktree-workspace/scripts/worktree-list.sh
 ```
 
 Shows workspace name, branch, and each nested repo's branch. Run the script and relay the output to the user.

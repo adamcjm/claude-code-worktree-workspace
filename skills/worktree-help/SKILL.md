@@ -8,7 +8,7 @@ description: Display usage information and examples for all worktree-workspace c
 Show usage information:
 
 ```bash
-bash "${CLAUDE_PLUGIN_ROOT}/scripts/worktree-help.sh"
+bash ~/.claude/skills/worktree-workspace/scripts/worktree-help.sh
 ```
 
 Run the script and relay the output to the user.

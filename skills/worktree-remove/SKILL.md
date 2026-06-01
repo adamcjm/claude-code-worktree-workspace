@@ -8,13 +8,13 @@ description: Remove a workspace created by worktree-add, cleaning up all nested 
 Remove a workspace and optionally its branches:
 
 ```bash
-bash "${CLAUDE_PLUGIN_ROOT}/scripts/worktree-remove.sh" "<name>"
+bash ~/.claude/skills/worktree-workspace/scripts/worktree-remove.sh "<name>"
 ```
 
 With branch deletion:
 
 ```bash
-bash "${CLAUDE_PLUGIN_ROOT}/scripts/worktree-remove.sh" "<name>" --delete-branches
+bash ~/.claude/skills/worktree-workspace/scripts/worktree-remove.sh "<name>" --delete-branches
 ```
 
 ## What it does

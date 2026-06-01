@@ -8,7 +8,7 @@ description: Create a complete git worktree workspace with nested repos and giti
 Create a complete workspace by running the worktree-add script:
 
 ```bash
-bash "${CLAUDE_PLUGIN_ROOT}/scripts/worktree-add.sh" "<name>" --prefix "<prefix>" --base "<base>"
+bash ~/.claude/skills/worktree-workspace/scripts/worktree-add.sh "<name>" --prefix "<prefix>" --base "<base>"
 ```
 
 ## Arguments
