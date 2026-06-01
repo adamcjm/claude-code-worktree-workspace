@@ -44,38 +44,11 @@
 
 ## 安装
 
-### 方式一：一键安装
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/adamcjm/claude-code-worktree-workspace/main/install.sh | bash
 ```
 
-一条命令完成 clone、注册 marketplace、安装插件。完成后重启 Claude Code。
-
-### 方式二：手动安装
-
-1. 在 `~/.claude/settings.json` 中注册 marketplace：
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "local": {
-      "source": {
-        "source": "github",
-        "repo": "adamcjm/claude-code-worktree-workspace"
-      }
-    }
-  }
-}
-```
-
-2. 在 Claude Code 中执行：
-
-```
-/plugin install worktree-workspace@local
-```
-
-完成后重启 Claude Code。
+插件会被 clone 到 `~/.claude/skills/worktree-workspace` — Claude Code v2.1.157+ 会自动发现该目录下的插件。完成后重启 Claude Code。
 
 ## 命令
 

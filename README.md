@@ -44,38 +44,11 @@ A Claude Code plugin that creates **immediately runnable** git worktree workspac
 
 ## Installation
 
-### Option 1: One-command install
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/adamcjm/claude-code-worktree-workspace/main/install.sh | bash
 ```
 
-This clones the marketplace, registers it, and installs the plugin — all in one step. Restart Claude Code when done.
-
-### Option 2: Manual install
-
-1. Register the marketplace in `~/.claude/settings.json`:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "local": {
-      "source": {
-        "source": "github",
-        "repo": "adamcjm/claude-code-worktree-workspace"
-      }
-    }
-  }
-}
-```
-
-2. In Claude Code, run:
-
-```
-/plugin install worktree-workspace@local
-```
-
-Restart Claude Code when done.
+This clones the plugin to `~/.claude/skills/worktree-workspace` — Claude Code v2.1.157+ auto-discovers plugins from this directory. Restart Claude Code when done.
 
 ## Commands
 
