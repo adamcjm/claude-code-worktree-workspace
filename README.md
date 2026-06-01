@@ -23,6 +23,8 @@ A Claude Code plugin that creates **immediately runnable** git worktree workspac
 
 **One command to create a complete workspace.** The result is immediately runnable — no `npm install`, no copying config files, no manual setup. Beyond checking out tracked files, it automatically:
 
+![Demo](assets/demo.gif)
+
 - ✅ **Recursively handles nested git repos** — sub-repos ignored by the parent get their own worktrees, all on the same feature branch
 - ✅ **Intelligently copies config files** — `.env`, `.idea/`, `.claude/` and other gitignored configs are copied to the workspace
 - ✅ **Copies dependency directories** — `node_modules`, `vendor`, `.venv` are copied to the workspace. No `npm install` needed — the project is immediately runnable.

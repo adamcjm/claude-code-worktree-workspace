@@ -23,6 +23,8 @@
 
 **一键创建完整 workspace**。创建后立即可运行——无需 `npm install`，无需手动复制配置。不仅检出 git 追踪的文件，还自动：
 
+![Demo](assets/demo.gif)
+
 - ✅ **递归处理嵌套 git 仓库** — 被父仓库 ignore 的子仓库也会创建对应的 worktree，所有子仓库在同一 feature 分支上
 - ✅ **智能复制配置文件** — `.env`、`.idea/`、`.claude/` 等被 ignore 的配置文件原样复制到新 workspace
 - ✅ **复制依赖目录** — `node_modules`、`vendor`、`.venv` 原样复制到 workspace，无需 `npm install`，创建后立即可运行。
