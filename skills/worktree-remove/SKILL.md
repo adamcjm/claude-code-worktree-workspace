@@ -25,3 +25,7 @@ bash ~/.claude/skills/worktree-workspace/scripts/worktree-remove.sh "<name>" --d
 - With `--delete-branches`: also force-deletes the feature branch from every repo
 
 Parse the user's message for `<name>` and whether `--delete-branches` was mentioned. Run the script and relay the output to the user.
+
+## ⚠️  Do NOT set a timeout
+
+This script recursively deletes worktree directories that may contain `node_modules/`, `vendor/`, and other large dependency folders. File size varies across projects — from megabytes to gigabytes. A timeout would leave stale worktree metadata and leftover directories. Run the command without any timeout. Let it finish however long it takes.

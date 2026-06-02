@@ -12,3 +12,7 @@ bash ~/.claude/skills/worktree-workspace/scripts/worktree-list.sh
 ```
 
 Shows workspace name, branch, and each nested repo's branch. Run the script and relay the output to the user.
+
+## ⚠️  Do NOT set a timeout
+
+This script is a fast `git worktree list` wrapper — it should complete in seconds. No timeout is needed.

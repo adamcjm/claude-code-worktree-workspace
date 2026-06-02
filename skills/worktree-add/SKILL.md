@@ -26,3 +26,7 @@ bash ~/.claude/skills/worktree-workspace/scripts/worktree-add.sh "<name>" --pref
 - Skips build artifacts and caches only (`.next/`, `dist/`, `build/`, `__pycache__/`, `.DS_Store`, etc.)
 
 Parse the user's message for `<name>` and optional `--prefix`/`--base` flags. Run the script and relay the output to the user.
+
+## ⚠️  Do NOT set a timeout
+
+This script copies `node_modules/`, `vendor/`, and other dependency directories via rsync. The size varies wildly across projects — from megabytes to gigabytes. A timeout would truncate the copy mid-operation, leaving a broken workspace that requires manual cleanup. Run the command without any timeout. Let it finish however long it takes.
