@@ -47,7 +47,46 @@ collect_repo_roots() {
   done | sort -u
 }
 
+# Safely clean up a workspace directory with path assertions.
+# Only removes directories that are under REPO_PARENT and within the WS tree.
+safe_cleanup_workspace_dir() {
+  local dir="$1"
+
+  # Safety check 1: must be under the repo parent directory
+  if [[ "$dir" != "$REPO_PARENT/"* ]]; then
+    echo "    ⚠ Refusing to clean: $dir is outside repo parent ($REPO_PARENT)" >&2
+    return 1
+  fi
+
+  # Safety check 2: must be under the workspace root directory
+  if [[ "$dir" != "$WS/"* ]] && [ "$dir" != "$WS" ]; then
+    echo "    ⚠ Refusing to clean: $dir is outside workspace ($WS)" >&2
+    return 1
+  fi
+
+  # Safety check 3: must be a directory
+  if [ ! -d "$dir" ]; then
+    return 1
+  fi
+
+  # First pass: remove all empty directories (safest)
+  find "$dir" -type d -empty -delete 2>/dev/null || true
+
+  # Second pass: if content remains, it's non-empty dirs/files — safe to rm
+  if [ -d "$dir" ] && [ "$(ls -A "$dir" 2>/dev/null)" ]; then
+    echo "    Cleaning leftover: $(find "$dir" -not -path '*/.git/*' -type f 2>/dev/null | head -3)"
+    rm -rf "$dir"
+    [ ! -d "$dir" ] && echo "    Cleaned" || echo "    ⚠ Partial cleanup, some files may remain" >&2
+  else
+    # Only empty directories remain (or already gone)
+    rmdir "$dir" 2>/dev/null || true
+  fi
+}
+
 echo "Removing workspace: $WS"
+
+# Snapshot repo roots BEFORE removing anything — the .git files live inside WS
+REPO_ROOTS=$(collect_repo_roots)
 
 # Remove nested worktrees first (deepest first)
 find "$WS" -name ".git" -type f 2>/dev/null | sort -r | while read -r gitfile; do
@@ -56,7 +95,7 @@ find "$WS" -name ".git" -type f 2>/dev/null | sort -r | while read -r gitfile; d
     if git -C "$dir" rev-parse --git-dir 2>/dev/null | grep -q ".git/worktrees"; then
       echo "  Removing nested worktree: $dir"
       git -C "$dir" worktree remove "$dir" --force 2>/dev/null || true
-      [ -d "$dir" ] && rm -rf "$dir" && echo "    Cleaned leftover files"
+      safe_cleanup_workspace_dir "$dir" || true
     fi
   fi
 done
@@ -64,10 +103,10 @@ done
 # Remove root worktree
 echo "  Removing root worktree: $WS"
 git -C "$REPO_ROOT" worktree remove "$WS" --force 2>/dev/null || true
-[ -d "$WS" ] && rm -rf "$WS" && echo "  Cleaned leftover files"
+safe_cleanup_workspace_dir "$WS" || true
 
 # Clean up stale references in all repos
-for repo in $(collect_repo_roots); do
+for repo in $REPO_ROOTS; do
   git -C "$repo" worktree prune 2>/dev/null || true
 done
 
@@ -75,7 +114,7 @@ done
 if [ "$DELETE_BRANCHES" = true ] && [ -n "$BRANCH" ]; then
   echo ""
   echo "  Deleting branch '$BRANCH' from all repos:"
-  for repo in $(collect_repo_roots); do
+  for repo in $REPO_ROOTS; do
     repo_name=$(basename "$repo")
     if git -C "$repo" branch --list "$BRANCH" 2>/dev/null | grep -q .; then
       git -C "$repo" branch -D "$BRANCH" 2>/dev/null && \
