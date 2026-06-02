@@ -155,11 +155,11 @@ Workspaces for myapp:
 
 **What it does** step by step:
 
-1. Locates the workspace directory at `<repo-parent>/<repo-name>-<name>`
+1. Snapshots all repo roots and the current branch before any modification
 2. Removes nested sub-repo worktrees from deepest to shallowest
 3. Removes the root worktree
-4. **Completely deletes the workspace directory** — including any non-git files (dependencies, configs, etc.)
-5. Runs `git worktree prune` on every repo to clean up stale references
+4. **Safely cleans up leftover files** — empty directories first (`find -type d -empty -delete`), then non-empty contents via `rm -rf` after three-path assertions (under repo parent, within workspace tree, is a directory)
+5. Runs `git worktree prune` on every repo (using the pre-removal snapshot) to clean up stale references
 6. If `--delete-branches` is specified: force-deletes the branch from every repo
 
 **Branches are NOT deleted by default.** After `worktree-remove`, the branches still exist. Use `--delete-branches` to remove them, or delete manually with `git branch -D feature/<name>` in each repo.

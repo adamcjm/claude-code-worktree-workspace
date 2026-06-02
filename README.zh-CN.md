@@ -155,11 +155,11 @@ Workspaces for myapp:
 
 **执行流程**：
 
-1. 定位 workspace 目录 `<仓库父目录>/<仓库名>-<名称>`
+1. 在开始修改前，快照所有仓库根路径和当前分支名
 2. 从深层到浅层依次移除嵌套子仓库的 worktree
 3. 移除根仓库 worktree
-4. **彻底删除 workspace 目录**——包括所有非 git 文件（依赖、配置等）
-5. 在每个仓库中执行 `git worktree prune` 清理残留引用
+4. **安全清理残留文件** — 先清理空目录（`find -type d -empty -delete`），再通过三重路径断言（必须在仓库父目录下、必须在 workspace 目录树内、必须是目录）后执行 `rm -rf` 清理非空内容
+5. 使用删除前的快照，在每个仓库中执行 `git worktree prune` 清理残留引用
 6. 如果指定了 `--delete-branches`：强制删除每个仓库中对应的分支
 
 **默认不会删除分支。** `worktree-remove` 只移除 worktree 目录，分支依然保留。如需同时删除分支，使用 `--delete-branches`，或手动在各仓库中 `git branch -D feature/<名称>`。
