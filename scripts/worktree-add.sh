@@ -128,12 +128,30 @@ setup_workspace() {
   local target_path=$2
   local branch=$3
 
+  local repo_display_name
+  repo_display_name=$(basename "$src_repo")
+
   local resolved_base
   resolved_base=$(resolve_base "$src_repo" "$BASE")
 
-  echo "  Creating worktree: $target_path"
+  # Determine the effective base ref and its latest commit info
+  local effective_ref
+  local commit_hash
+  local commit_date
   if [ -n "$resolved_base" ]; then
-    echo "    (based on $resolved_base)"
+    effective_ref="$resolved_base"
+  else
+    effective_ref="HEAD"
+  fi
+  commit_hash=$(git -C "$src_repo" rev-parse --short "$effective_ref" 2>/dev/null || echo "unknown")
+  commit_date=$(git -C "$src_repo" log -1 --format='%ai' "$effective_ref" 2>/dev/null || echo "unknown")
+
+  echo "  [$repo_display_name]"
+  echo "    Base ref   : $effective_ref"
+  echo "    Base commit: $commit_hash ($commit_date)"
+  echo "    New branch : $branch"
+  echo "    Worktree   : $target_path"
+  if [ -n "$resolved_base" ]; then
     git -C "$src_repo" worktree add "$target_path" -b "$branch" "$resolved_base" 2>&1 | sed 's/^/    /'
   else
     git -C "$src_repo" worktree add "$target_path" -b "$branch" 2>&1 | sed 's/^/    /'
